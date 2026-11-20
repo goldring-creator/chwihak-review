@@ -133,6 +133,7 @@ h2.sec{scroll-margin-top:70px}
 .use span{font-size:14px;font-weight:600;color:var(--sub)}
 .use input{height:44px;font-size:15px;padding:0 12px;border:1px solid var(--line2);border-radius:8px;background:var(--card);color:var(--ink);width:100%}
 @media (max-width:640px){.use{grid-template-columns:1fr;gap:4px}}
+.use[hidden]{display:none}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-size:14px;color:var(--sub)}
 .addhead,.add{display:grid;grid-template-columns:1fr 1.4fr 1.4fr 44px;gap:8px;align-items:start}
 .addhead{font-size:13px;font-weight:600;color:var(--sub);margin-top:10px}.add{margin:8px 0}
@@ -147,7 +148,7 @@ h2.sec{scroll-margin-top:70px}
 <h2>검토 안내</h2>
 <ul>
 <li>사업 문서 전체에서 같은 대상을 같은 말로 부르기 위해, 2026. 11. 20. 전체 연구진 회의 3차 자료집에 쓰인 취학관리 용어 75개를 모아 짧은 설명을 붙였습니다.</li>
-<li>용어마다 우리 팀 산출물에서 어떻게 쓰는지 ①~④ 가운데 하나를 골라 주세요. <b>「다르게 사용」</b>이면 우리 팀이 쓰는 용어와 그 이유를 적어 주세요.</li>
+<li>용어마다 우리 팀 산출물에서 어떻게 쓰는지 ①~④ 가운데 하나를 골라 주세요. <b>「② 다르게 사용」</b>을 누르면 우리 팀이 쓰는 용어를 적는 칸이 나타납니다. 그 이유도 함께 적어 주세요.</li>
 <li>파란 상자의 <b>「검토 필요」</b>는 자료집에서 팀마다 다르게 쓰였거나 현장 의견이 있었던 곳입니다. 정해진 안이 아니라 검토할 지점입니다.</li>
 <li>사전에 없는 용어는 맨 아래 <b>「추가할 용어」</b>에 적어 주세요. 작성 내용은 이 브라우저에 자동으로 임시 저장됩니다.</li>
 <li>바탕 자료: 「취학관리 사업 용어 사용 기준 (최종)」(2026. 8. 27.), 2차 워크숍(부산) 현장 검토의견, 「초·중등교육법」과 같은 법 시행령(2026. 11. 20. 시행본).</li>
@@ -184,7 +185,7 @@ ${e.alt?`<div class="alt">다른 표기: ${esc(e.alt)}</div>`:""}
 <div class="mean">${esc(e.m)}</div>
 ${e.issue?`<div class="issue"><b>검토 필요</b>${esc(e.issue)}</div>`:""}
 <div class="ans"><div class="opts">${opts}</div>
-<div class="use"><span>우리 팀이 쓰는 용어</span><input data-id="${e.id}" data-k="u" value="${esc(r.u)}" placeholder="「다르게 사용」일 때 적어 주세요"></div>
+<div class="use"${r.c==="diff"?"":" hidden"}><span>우리 팀이 쓰는 용어</span><input data-id="${e.id}" data-k="u" value="${esc(r.u)}" placeholder="우리 팀에서 쓰는 용어를 적어 주세요"></div>
 <textarea data-id="${e.id}" data-k="t" placeholder="이유나 의견을 자유롭게 적어 주세요.">${esc(r.t)}</textarea></div></div>`}
 function render(){
  document.getElementById("gnav").innerHTML=GROUPS.map((g,i)=>`<a href="#grp${i}">${esc(g)}</a>`).join("");
@@ -196,7 +197,7 @@ function applyIssue(){const on=st.onlyIssue;document.getElementById("onlyIssue")
  document.querySelectorAll("#list h2.sec").forEach(h=>{let n=h.nextElementSibling,any=false;while(n&&n.classList.contains("card")){if(n.style.display!=="none")any=true;n=n.nextElementSibling}h.style.display=any?"":"none"})}
 function renderAdds(){document.getElementById("adds").innerHTML=st.adds.map((x,i)=>`<div class="add" data-i="${i}"><input data-k="w" value="${esc(x.w)}" placeholder="용어"><textarea data-k="m" placeholder="뜻과 쓰는 곳">${esc(x.m)}</textarea><textarea data-k="t" placeholder="의견">${esc(x.t)}</textarea><button class="xbtn" data-del="${i}" aria-label="행 삭제" title="행 삭제"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`).join("")}
 document.addEventListener("change",ev=>{const t=ev.target;
- if(t.type==="radio"){R(t.name).c=t.value;t.closest(".card").classList.add("done");save()}
+ if(t.type==="radio"){R(t.name).c=t.value;const c=t.closest(".card");c.classList.add("done");const u=c.querySelector(".use");u.hidden=t.value!=="diff";if(t.value==="diff")u.querySelector("input").focus();save()}
  else if(t.id==="team"){st.team=t.value;save()}
  else if(t.id==="onlyIssue"){st.onlyIssue=t.checked;applyIssue();save()}});
 document.addEventListener("input",ev=>{const t=ev.target;
@@ -208,7 +209,7 @@ document.addEventListener("click",ev=>{const b=ev.target.closest("button");if(!b
  else if(b.id==="addRow"){st.adds.push({w:"",m:"",t:""});renderAdds();save()}
  else if(b.id==="submit")submit()});
 function rows(){const out=[];
- for(const e of ITEMS){const r=st.r[e.id]||{};if(!r.c&&!r.u&&!r.t)continue;out.push([GROUPS[e.g],e.term,(OPT.find(o=>o[0]===r.c)||["",""])[1],r.u||"",r.t||""])}
+ for(const e of ITEMS){const r=st.r[e.id]||{};if(!r.c&&!r.u&&!r.t)continue;out.push([GROUPS[e.g],e.term,(OPT.find(o=>o[0]===r.c)||["",""])[1],r.c==="diff"?(r.u||""):"",r.t||""])}
  for(const x of st.adds){if(x.w||x.m||x.t)out.push(["추가할 용어",x.w,"",x.m,x.t])}
  if(st.general)out.push(["전체 의견","","","",st.general]);return out}
 function downloadCSV(){const head=["팀","이름","묶음","용어","선택","쓰는 용어","이유·의견"];
