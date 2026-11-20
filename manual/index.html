@@ -19,6 +19,7 @@ header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);bac
 .top h1 small{font-weight:500;color:var(--faint);font-size:13px;margin-left:4px}
 .progw{width:100%;display:flex;align-items:center;gap:10px}
 .prog{font-size:13px;color:var(--sub);white-space:nowrap}.bar{flex:1;height:3px;background:var(--line);border-radius:2px}.bar i{display:block;height:100%;background:var(--acc);border-radius:2px;width:0}
+.swap{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid var(--line2);border-radius:8px;background:var(--card);color:var(--acc);font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}.swap:hover{border-color:var(--acc);background:var(--accbg)}.swap svg{width:16px;height:16px}
 .who{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;margin:24px 0 0}
 .who .wl{font-weight:700;margin-right:4px}
 .who label{display:flex;align-items:center;gap:8px;color:var(--sub);font-size:15px}
@@ -116,7 +117,7 @@ textarea{min-height:72px;resize:vertical;margin-top:10px;line-height:1.55}
 #vbox{position:absolute;border:2px solid var(--hlb);background:var(--hl);border-radius:4px;display:none;pointer-events:none}
 </style></head><body>
 <header class="top"><div class="in">
-<h1>표준 매뉴얼 협의·검토 체크리스트</h1>
+<h1>표준 매뉴얼 협의·검토 체크리스트</h1><a class="swap" href="../terms/">용어 검토로 이동<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
 </div></header>
 <div class="wrap">
 <section class="who" aria-label="작성자"><span class="wl">작성자</span><label>팀 <select id="team"><option value="">선택</option><option>1팀</option><option>2팀</option><option>3팀</option><option>5팀</option></select></label><label>이름 <input id="name" placeholder="이름을 적어 주세요"></label></section>
